@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bu Site Nasıl Yapıldı — Rehber | Gebze Fiber Tamir</title>
+  <meta name="description" content="Gebze Fiber Tamir sitesinin npm veya build aracı olmadan, düz HTML/CSS/JS ve CDN üzerinden GSAP, Three.js ile nasıl kurulduğunun adım adım anlatımı: teknoloji tercihleri, tasarım kararları, WebGL sahnesi ve süreç.">
+  <meta name="theme-color" content="#0a0714">
+  <meta property="og:title" content="Bu Site Nasıl Yapıldı — Rehber">
+  <meta property="og:description" content="Gebze Fiber Tamir sitesinin npm olmadan, düz HTML/CSS/JS ve CDN üzerinden nasıl kurulduğunun anlatımı.">
+  <meta property="og:type" content="article">
+  <meta property="og:locale" content="tr_TR">
+  <meta property="og:url" content="https://gebze-fiber-tamir.netlify.app/rehber">
+  <link rel="canonical" href="https://gebze-fiber-tamir.netlify.app/rehber">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/rehber.css">
+</head>
+<body class="rehber-body">
+  <div class="grain" aria-hidden="true"></div>
+
+  <header class="site-header" id="ust">
+    <a class="brand" href="/" aria-label="Gebze Fiber Tamir, ana sayfa">
+      <svg class="brand-mark" viewBox="0 0 32 32" width="32" height="32" aria-hidden="true">
+        <path d="M2 22 C 10 6, 18 28, 30 10" fill="none" stroke="url(#markGrad)" stroke-width="2.4" stroke-linecap="round"/>
+        <circle class="brand-pulse" cx="21" cy="21.4" r="3" fill="#ffb25e"/>
+        <defs>
+          <linearGradient id="markGrad" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#6bf0c2"/>
+            <stop offset="1" stop-color="#9d8cff"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <span class="brand-name">Gebze <em>Fiber</em> Tamir</span>
+    </a>
+    <nav class="site-nav" aria-label="Ana menü">
+      <a href="/#hizmetler">Hizmetler</a>
+      <a href="/#surec">Süreç</a>
+      <a href="/#bolge">Bölge</a>
+      <a href="/#iletisim">İletişim</a>
+      <a href="/rehber" aria-current="page">Rehber</a>
+    </nav>
+    <a class="btn btn-header" href="tel:+905301380041" aria-label="Telefonla ara: 0530 138 00 41">
+      <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.01-.24c1.12.37 2.33.57 3.58.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1C10.61 21 3 13.39 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.46.57 3.58a1 1 0 0 1-.24 1.01l-2.2 2.2z"/></svg>
+      <span>0530 138 00 41</span>
+    </a>
+  </header>
+
+  <main>
+    <section class="guide-hero">
+      <div class="guide-hero-inner">
+        <a class="back-link" href="/">
+          <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20z"/></svg>
+          Ana sayfaya dön
+        </a>
+        <p class="eyebrow">Rehber</p>
+        <h1 class="guide-title">Bu site <span class="accent">nasıl yapıldı</span></h1>
+        <p class="guide-sub">
+          Bu sayfa, Gebze Fiber Tamir'in ana sayfasının hangi araçlarla, hangi kısıtlarla ve
+          hangi kararlarla kurulduğunu anlatıyor — okuyup kendi projenizde aynı süreci
+          uygulayabilmeniz için, adım adım ve dürüstçe.
+        </p>
+      </div>
+    </section>
+
+    <nav class="toc" aria-label="İçindekiler">
+      <a href="#neden">1. Neden yeni bir site</a>
+      <a href="#teknoloji">2. Teknoloji yığını</a>
+      <a href="#tasarim">3. Tasarım kararları</a>
+      <a href="#webgl">4. WebGL sahnesi</a>
+      <a href="#rol">5. Claude'un rolü</a>
+      <a href="#surec">6. Süreç</a>
+      <a href="#sinirlamalar">7. Sınırlamalar</a>
+    </nav>
+
+    <article class="guide-body">
+      <section class="guide-section" id="neden" data-reveal>
+        <span class="guide-num">01</span>
+        <h2>Neden yeni bir site</h2>
+        <p>
+          İşletmenin mevcut sitesi, <strong>gebzefiberkablo.com</strong>, aynı telefon numarasını
+          kullanan genel bir şablon siteydi: ince içerikli, belirli bir çalışma saati ya da
+          fiyat bilgisi yayınlanmamış, tasarımı jenerik bir telekom şablonu görünümünde.
+          Bu proje o siteyi taklit etmek yerine sıfırdan kuruldu. Eski site yalnızca tek bir
+          amaçla kullanıldı: telefon numarasının ve iş kategorisinin gerçek olduğunu
+          doğrulamak. Ne düzeni, ne renk şeması, ne tipografisi, ne de sayfa yapısı referans
+          alınmadı — yeni site, işin gerçek bağlamından (verilen hizmetler, telefon/WhatsApp
+          numarası, hizmet verilen bölge) yola çıkılarak tasarlandı.
+        </p>
+      </section>
+
+      <section class="guide-section" id="teknoloji" data-reveal>
+        <span class="guide-num">02</span>
+        <h2>Teknoloji yığını ve neden böyle</h2>
+        <p>
+          Bu sitenin kurulduğu ortamda npm paket kayıt sunucusuna erişim yoktu.
+          <code>registry.npmjs.org</code>, <code>cdn.jsdelivr.net</code> ve <code>npmmirror</code>
+          adresleri test edildi ve ulaşılamadığı doğrulandı; bu yüzden Astro, Vite veya
+          benzeri bir build aracı, hatta <code>npm install</code> bile bu ortamda çalışmıyordu.
+          Buna karşılık şu adresler erişilebilir çıktı ve site tamamen bunlar üzerine kuruldu:
+        </p>
+        <ul class="stack-list">
+          <li><code>unpkg.com</code> — GSAP ve ScrollTrigger, klasik <code>&lt;script&gt;</code> etiketiyle, <code>window.gsap</code> global değişkeni üzerinden</li>
+          <li><code>esm.sh</code> — Three.js, gerçek bir ES module olarak, <code>&lt;script type="module"&gt;</code> içinde <code>import</code> ile</li>
+          <li><code>fonts.googleapis.com</code> — Google Fonts, standart <code>&lt;link&gt;</code> ile</li>
+          <li><code>cdnjs.cloudflare.com</code> — gerektiğinde ek kütüphaneler için yedek kaynak</li>
+        </ul>
+        <p>
+          Sonuç: build adımı olmayan, elle yazılmış düz HTML, CSS ve JavaScript. Bunu sadece
+          bir kısıtlama olarak değil, kendi başına savunulabilir bir mimari tercih olarak da
+          görmek mümkün — bağımlılık ağacı yok, <code>npm audit</code> uyarıları yok, sürüm
+          çakışması yok, derleme süresi yok. Dosyayı tarayıcıya açtığınız an çalışan, uzun
+          vadede bozulma riski en düşük site türlerinden biri bu. Küçük, dönüşüm odaklı bir
+          tanıtım sitesi için fazlasıyla yeterli.
+        </p>
+      </section>
+
+      <section class="guide-section" id="tasarim" data-reveal>
+        <span class="guide-num">03</span>
+        <h2>Tasarım kararları</h2>
+        <p>
+          Tasarımın çıkış noktası tek bir metafordu: <em>fiber, camın içinde yol alan
+          ışıktır.</em> Sinyal koptuğunda arayan bir müşteri için görünmez olan şey — ince bir
+          cam telin içinde ışık hızında akan veri — sitenin görsel diline dönüştürüldü: koyu,
+          neredeyse gece gibi bir zemin üzerinde, ince ışık iplikleri boyunca hareket eden
+          renkli sinyal atımları.
+        </p>
+        <div class="swatch-grid">
+          <div class="swatch" style="--sw:#0a0714"><span class="swatch-chip"></span><span>Zemin</span><code>#0a0714</code></div>
+          <div class="swatch" style="--sw:#120d1f"><span class="swatch-chip"></span><span>Zemin (ikincil)</span><code>#120d1f</code></div>
+          <div class="swatch" style="--sw:#edeaf6"><span class="swatch-chip"></span><span>Metin</span><code>#edeaf6</code></div>
+          <div class="swatch" style="--sw:#6bf0c2"><span class="swatch-chip"></span><span>Nane</span><code>#6bf0c2</code></div>
+          <div class="swatch" style="--sw:#ffb25e"><span class="swatch-chip"></span><span>Kehribar</span><code>#ffb25e</code></div>
+          <div class="swatch" style="--sw:#9d8cff"><span class="swatch-chip"></span><span>Menekşe</span><code>#9d8cff</code></div>
+        </div>
+        <p>
+          Tipografi eşleşmesi <strong>Bricolage Grotesque</strong> (başlıklar) ve
+          <strong>Instrument Sans</strong> (gövde metni) oldu. Bu seçimin arkasında estetik
+          kadar pratik bir zorunluluk da var: site tamamen Türkçe ve başlıklarda ğ, ş, ı, İ,
+          ö, ü, ç karakterleri sürekli geçiyor. "İlginç" görünen birçok gösterim (display)
+          fontu bu karakterlerin bir kısmını desteklemiyor ya da yanlış çiziyor — seçime
+          geçmeden önce her iki fontun Latin Extended kapsamı tek tek doğrulandı. Sonuçta
+          hem karakter dolu hem de Türkçe metinde kırılmayan bir eşleşme ortaya çıktı.
+        </p>
+        <p>
+          Hizmetler bölümü ilk halinde altı eş boyutlu kart olarak kurulmuştu — teknik olarak
+          doğru ama "şablon sitesi" hissi veren, hiyerarşisiz bir düzendi. Gözden geçirme
+          turlarından birinde bu bir bento (kırık ızgara) kompozisyona dönüştürüldü: en sık
+          aranan hizmet olan fiber kablo tamiri geniş bir öne çıkan kart, "yerinde servis" ise
+          tam genişlikte kapanan bir şerit oldu. Aynı mantık düğme ve kart etkileşimlerine de
+          taşındı: renk değişimi yerine, sitenin konseptine uygun biçimde düğmelerin ve kartların
+          üzerinden geçen ince bir ışık atımı animasyonu eklendi — dekorasyon değil, markanın
+          kendi görsel dilinin etkileşime sızması.
+        </p>
+      </section>
+
+      <section class="guide-section" id="webgl" data-reveal>
+        <span class="guide-num">04</span>
+        <h2>WebGL sahnesi</h2>
+        <p>
+          Ana sayfadaki hero bölümündeki animasyon, Three.js ile çizilen eğri (tube)
+          geometrileri üzerine yazılmış özel bir GLSL fragment shader'a dayanıyor. Her ışık
+          ipliğinin üzerinde, tüpün uzunluğu boyunca hareket eden dar bir "ışık paketi"
+          hesaplanıyor ve bu paket <code>AdditiveBlending</code> (ekleme karışımı) ile
+          çiziliyor; ince ipliğin etrafına, daha geniş yarıçaplı ve daha düşük opaklıklı ikinci
+          bir "halo" tüp eklenerek parlama hissi elle üretiliyor.
+        </p>
+        <p>
+          Bilinçli olarak Three.js'in <code>UnrealBloomPass</code> son işleme (postprocessing)
+          efekti kullanılmadı. Bunun yerine elle yazılmış halo tüpü tercih edildi, çünkü
+          postprocessing zinciri (<code>EffectComposer</code>, <code>RenderPass</code>,
+          <code>UnrealBloomPass</code>) özellikle pencere yeniden boyutlandırıldığında ve
+          orta seviye mobil GPU'larda daha kırılgan davranıyor; halo tüpü yaklaşımı görsel
+          olarak benzer bir parlama verirken ek bir render geçişi gerektirmiyor.
+        </p>
+        <p>Performans için alınan somut önlemler:</p>
+        <ul class="stack-list">
+          <li>Piksel oranı <code>Math.min(devicePixelRatio, 2)</code> ile sınırlandı, dar ekranlarda 1.5'e düşürüldü</li>
+          <li>760px altındaki ekranlarda iplik sayısı ve geometri detayı azaltıldı</li>
+          <li>Sahne <code>requestIdleCallback</code> ile tembel başlatılıyor, ilk boyamayı bloklamıyor</li>
+          <li><code>IntersectionObserver</code> ile hero görünüm dışına çıktığında veya sekme gizlendiğinde animasyon döngüsü durduruluyor</li>
+          <li>WebGL kullanılamıyorsa canvas kaldırılıp yerine düz CSS gradyan zemin devreye giriyor</li>
+          <li><code>prefers-reduced-motion</code> açıksa sahne tek bir sabit kare render edip animasyon döngüsüne hiç girmiyor</li>
+        </ul>
+      </section>
+
+      <section class="guide-section" id="rol" data-reveal>
+        <span class="guide-num">05</span>
+        <h2>Claude'un rolü</h2>
+        <p>
+          Bu sayfaların görsel tasarımı, Anthropic'in Fable modeli tarafından, verilen bir
+          kreatif brief'e karşılık üretildi: marka adı, telefon numarası, hizmet listesi ve
+          hizmet bölgesi gibi doğrulanmış iş bilgileri sabit tutulup, tasarım yönü, renk
+          paleti, tipografi eşleşmesi ve WebGL konsepti serbest bırakıldı. Bu bilinçli bir
+          portföy gösterimidir — model, gerçek bir işletme için gerçek kısıtlar (npm erişimi
+          yok, uydurma bilgi yasak, mobilde arama/WhatsApp önceliği) altında uçtan uca bir
+          site üretebildiğini göstermek üzere kullanıldı.
+        </p>
+      </section>
+
+      <section class="guide-section" id="surec" data-reveal>
+        <span class="guide-num">06</span>
+        <h2>Süreç</h2>
+        <p>Kendi projenizde uygulayabileceğiniz sıra şuydu:</p>
+        <ol class="checklist">
+          <li><strong>Araştırma.</strong> İşletmenin gerçek bilgilerini (telefon, hizmetler, bölge) topla; mevcut siteyi varsa sadece doğrulama için incele, tasarımını kopyalama.</li>
+          <li><strong>Ortam kısıtlarını keşfet.</strong> Hangi paket kayıt sunucularına, hangi CDN'lere erişim var — bunu varsaymadan test et.</li>
+          <li><strong>İçerik ve dönüşüm hedefini planla.</strong> Bu sitede birincil hedef telefon araması veya WhatsApp mesajıydı; sayfa yapısı buna göre kuruldu (sabit mobil CTA çubuğu, tekrarlayan çağrılar).</li>
+          <li><strong>Tasarım ve kodu birlikte üret.</strong> Palet, tipografi ve konsept metaforunu önce netleştir, sonra HTML/CSS/JS'i buna göre yaz.</li>
+          <li><strong>Yerel önizlemede doğrula.</strong> Masaüstü ve mobil ekran görüntüleri al, konsol hatalarını ve başarısız ağ isteklerini kontrol et.</li>
+          <li><strong>Kritik ve cilalama turları — art arda, taze gözle.</strong> Bu sitede üç tur yapıldı. Birincisi favicon, özel 404 sayfası ve güvenlik başlıkları (CSP dahil) gibi teknik eksikleri kapattı. İkincisi, siteyi hiç görmemiş bir gözle yapılan bağımsız bir eleştiri turuydu: hizmetler ızgarası şablon hissi verdiği için bento düzene çevrildi, süreç adımları arasına akan bir sinyal çizgisi eklendi, düğme/kart etkileşimlerine ışık atımı mikro-animasyonları geldi ve mobilde bölge haritasındaki okunamayan etiketler büyütüldü. Üçüncüsü bu sayfayı — yani şu an okuduğunuz metni — güncel tutup son bir tutarlılık kontrolü yaptı. Her tur bir öncekinin kör noktalarını hedef aldı; aynı kişi/model kendi işini art arda üç kez incelemek yerine mümkün olduğunca taze bir bakışla tekrar değerlendirdi.</li>
+          <li><strong>Kod incelemesi.</strong> Erişilebilirlik (alt metin, aria-label, odak durumları), performans (lazy-init, reduced motion) ve dürüstlük (uydurma bilgi var mı) kontrolü yap.</li>
+          <li><strong>Statik dağıtım.</strong> Build adımı olmadığı için dosyalar doğrudan Netlify'a statik olarak yüklendi.</li>
+        </ol>
+      </section>
+
+      <section class="guide-section" id="sinirlamalar" data-reveal>
+        <span class="guide-num">07</span>
+        <h2>Sınırlamalar</h2>
+        <p class="callout">
+          Bu sitede bilerek eklenmeyen şeyler var: gerçek müşteri yorumu, yıldız puanı, fiyat
+          bilgisi ve kesin çalışma saati. Bunların hiçbiri işletme tarafından doğrulanmadığı
+          için sayfa uydurma bilgi içermektense eksik kalmayı tercih etti. Telefon ve WhatsApp
+          üzerinden hızlıca ulaşılabileceği belirtildi; ötesi işletmenin kendi beyanına
+          bırakıldı.
+        </p>
+      </section>
+
+      <div class="guide-cta" data-reveal>
+        <p>Arızanız mı var, yoksa siteyi mi konuşmak istiyorsunuz?</p>
+        <div class="hero-cta">
+          <a class="btn btn-primary" href="tel:+905301380041">
+            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.01-.24c1.12.37 2.33.57 3.58.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1C10.61 21 3 13.39 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.46.57 3.58a1 1 0 0 1-.24 1.01l-2.2 2.2z"/></svg>
+            Hemen Ara
+          </a>
+          <a class="btn btn-wa" href="https://wa.me/905301380041?text=Merhaba%2C%20fiber%20internet%20ar%C4%B1zam%20var%2C%20yard%C4%B1mc%C4%B1%20olabilir%20misiniz%3F">
+            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+            WhatsApp'tan Yaz
+          </a>
+        </div>
+        <a class="text-link" href="/">Ana sayfaya dön</a>
+      </div>
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span class="brand-name">Gebze <em>Fiber</em> Tamir</span>
+        <p>Fiber optik kablo tamiri ve arıza servisi.</p>
+      </div>
+      <div class="footer-contact">
+        <a href="tel:+905301380041">+90 530 138 00 41</a>
+        <a href="https://wa.me/905301380041?text=Merhaba%2C%20fiber%20internet%20ar%C4%B1zam%20var%2C%20yard%C4%B1mc%C4%B1%20olabilir%20misiniz%3F">WhatsApp</a>
+      </div>
+      <p class="footer-area">Gebze · Darıca · Çayırova · Dilovası · Körfez · İzmit · Pendik – Tuzla</p>
+      <p class="footer-fine"><span id="year">2026</span> Gebze Fiber Tamir · <a href="/">Ana sayfa</a></p>
+    </div>
+  </footer>
+
+  <nav class="cta-bar" aria-label="Hızlı iletişim">
+    <a class="cta-bar-call" href="tel:+905301380041">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.01-.24c1.12.37 2.33.57 3.58.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1C10.61 21 3 13.39 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.46.57 3.58a1 1 0 0 1-.24 1.01l-2.2 2.2z"/></svg>
+      Ara
+    </a>
+    <a class="cta-bar-wa" href="https://wa.me/905301380041?text=Merhaba%2C%20fiber%20internet%20ar%C4%B1zam%20var%2C%20yard%C4%B1mc%C4%B1%20olabilir%20misiniz%3F">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+      WhatsApp
+    </a>
+  </nav>
+
+  <script src="https://unpkg.com/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://unpkg.com/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <script src="../js/main.js"></script>
+</body>
+</html>
