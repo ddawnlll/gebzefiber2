@@ -11,8 +11,8 @@
   --violet: #9d8cff;
   --amber-ink: #241103;
   --mint-ink: #04211a;
-  --font-display: var(--font-bricolage), system-ui, sans-serif;
-  --font-body: var(--font-instrument), system-ui, sans-serif;
+  --font-display: "Bricolage Grotesque", system-ui, sans-serif;
+  --font-body: "Instrument Sans", system-ui, sans-serif;
   --step-0: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
   --step-1: clamp(1.15rem, 1.05rem + 0.5vw, 1.4rem);
   --step-2: clamp(1.5rem, 1.3rem + 1vw, 2rem);
