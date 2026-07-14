@@ -1,4 +1,4 @@
-import * as THREE from "https://esm.sh/three@0.160.0";
+import * as THREE from "./vendor/three.module.min.js";
 
 const canvas = document.getElementById("hero-canvas");
 const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;

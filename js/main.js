@@ -59,6 +59,18 @@
       stagger: 0.09,
       delay: 0.15
     });
+
+    // Safety net: the hero reveal must never be permanently invisible. If the
+    // tween somehow never completes (a backgrounded/prerendered tab pausing
+    // rAF, an interrupted animation frame, etc.), force the final visible
+    // state after a grace period well past the tween's own duration.
+    setTimeout(function () {
+      heroItems.forEach(function (el) {
+        if (parseFloat(getComputedStyle(el).opacity) < 1) {
+          gsap.set(el, { clearProps: "opacity,transform" });
+        }
+      });
+    }, 2500);
   }
 
   // -- Reveals are entrance-only (once) so fast scrolling is never blocked ---
@@ -154,4 +166,18 @@
   });
 
   ScrollTrigger.refresh();
+
+  // Trigger positions are computed from layout at the moment refresh() runs.
+  // Web fonts swapping in late (or the hero canvas/images settling) can shift
+  // section heights afterward, leaving stale trigger thresholds that never
+  // fire — the class of bug behind reveals "sometimes" not showing. Recompute
+  // once layout has actually settled.
+  window.addEventListener("load", function () {
+    ScrollTrigger.refresh();
+  });
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(function () {
+      ScrollTrigger.refresh();
+    });
+  }
 })();

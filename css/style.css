@@ -760,6 +760,10 @@ svg { display: block; }
 .footer-contact a:first-child:hover { color: var(--amber); }
 .footer-contact a:last-child:hover { color: var(--mint); }
 
+.footer-links { display: flex; gap: 1.4rem; flex-wrap: wrap; }
+.footer-links a { color: var(--muted); font-size: 0.9rem; transition: color 0.2s ease; }
+.footer-links a:hover { color: var(--mint); }
+
 .footer-area { color: var(--muted); font-size: 0.85rem; letter-spacing: 0.04em; }
 .footer-fine { color: rgba(165, 156, 192, 0.6); font-size: 0.8rem; }
 
