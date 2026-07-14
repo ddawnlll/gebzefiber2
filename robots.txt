@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /admin
 
 Sitemap: https://gebze-fiber-tamir.netlify.app/sitemap.xml
