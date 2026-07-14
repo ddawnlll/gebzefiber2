@@ -1,5 +1,26 @@
 [build]
   publish = "."
+  functions = "netlify/functions"
+  command = "npm install"
+
+[functions]
+  node_bundler = "esbuild"
+  included_files = ["admin/views/**", "admin/public/**"]
+
+[[redirects]]
+  from = "/admin"
+  to = "/.netlify/functions/app/admin"
+  status = 200
+
+[[redirects]]
+  from = "/admin/*"
+  to = "/.netlify/functions/app/admin/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/app/api/:splat"
+  status = 200
 
 [[headers]]
   for = "/*"

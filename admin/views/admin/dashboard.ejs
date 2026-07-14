@@ -1,0 +1,178 @@
+<%- include('partials/head', { title: 'Genel Bakış' }) %>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="layout">
+    <%- include('partials/sidebar', { active: 'dashboard' }) %>
+
+    <main class="main">
+      <%- include('partials/topbar', {
+        eyebrow: 'Gebze Fiber · Analitik',
+        heading: 'Genel Bakış',
+        sub: range.label + ' · önceki dönemle karşılaştırmalı',
+        range, path: '/admin/'
+      }) %>
+
+      <%
+        function deltaBadge(d, label) {
+          if (d === null) return '<span class="delta delta--new">yeni</span>';
+          if (d === 0) return '<span class="delta">±0%</span>';
+          const up = d > 0;
+          const cls = up ? 'delta--up' : 'delta--down';
+          const arrow = up ? '▲' : '▼';
+          return `<span class="delta ${cls}" title="${label}">${arrow} ${Math.abs(d)}%</span>`;
+        }
+      %>
+
+      <!-- KPI cards -->
+      <div class="kpi-grid">
+        <article class="kpi kpi--mint">
+          <div class="kpi-top">
+            <span class="kpi-label">Tekil Ziyaretçi</span>
+            <%- deltaBadge(kpis.uniques.delta, 'önceki döneme göre') %>
+          </div>
+          <span class="kpi-num" data-count="<%= kpis.uniques.value %>"><%= kpis.uniques.value %></span>
+          <svg class="spark" data-spark="uniques" data-color="mint" aria-hidden="true"></svg>
+        </article>
+        <article class="kpi kpi--violet">
+          <div class="kpi-top">
+            <span class="kpi-label">Sayfa Görüntüleme</span>
+            <%- deltaBadge(kpis.views.delta, 'önceki döneme göre') %>
+          </div>
+          <span class="kpi-num" data-count="<%= kpis.views.value %>"><%= kpis.views.value %></span>
+          <svg class="spark" data-spark="views" data-color="violet" aria-hidden="true"></svg>
+        </article>
+        <article class="kpi kpi--amber">
+          <div class="kpi-top">
+            <span class="kpi-label">Dönüşüm</span>
+            <%- deltaBadge(kpis.conversions.delta, 'önceki döneme göre') %>
+          </div>
+          <span class="kpi-num" data-count="<%= kpis.conversions.value %>"><%= kpis.conversions.value %></span>
+          <svg class="spark" data-spark="conversions" data-color="amber" aria-hidden="true"></svg>
+        </article>
+        <article class="kpi kpi--hero">
+          <div class="kpi-top">
+            <span class="kpi-label">Dönüşüm Oranı</span>
+            <%- deltaBadge(kpis.rate.delta, 'önceki döneme göre') %>
+          </div>
+          <span class="kpi-num"><%= kpis.rate.value %><small>%</small></span>
+          <svg class="spark" data-spark="rate" data-color="amber" aria-hidden="true"></svg>
+        </article>
+      </div>
+
+      <!-- Traffic chart + conversion split -->
+      <div class="grid-main">
+        <section class="card card--span2">
+          <div class="card-head">
+            <h3>Trafik ve Dönüşüm</h3>
+            <div class="legend">
+              <span class="legend-item"><i class="legend-dot legend-dot--mint"></i>Görüntüleme</span>
+              <span class="legend-item"><i class="legend-dot legend-dot--amber"></i>Dönüşüm</span>
+            </div>
+          </div>
+          <div id="areaChart" class="chart-host" role="img" aria-label="Zaman içinde trafik ve dönüşüm grafiği"></div>
+        </section>
+
+        <section class="card">
+          <div class="card-head">
+            <h3>Dönüşüm Türleri</h3>
+            <span class="card-note"><%= range.label %></span>
+          </div>
+          <div id="convRing" class="ring-host"></div>
+        </section>
+      </div>
+
+      <!-- Heatmap + live feed -->
+      <div class="grid-main">
+        <section class="card card--span2">
+          <div class="card-head">
+            <h3>Trafik Isı Haritası</h3>
+            <span class="card-note">Son 30 gün · gün × saat</span>
+          </div>
+          <div id="heatmap" class="heatmap-host"></div>
+        </section>
+
+        <section class="card">
+          <div class="card-head">
+            <h3>Canlı Akış</h3>
+            <span class="card-note">son olaylar</span>
+          </div>
+          <% if (feed.length === 0) { %>
+            <div class="empty-state">
+              <svg viewBox="0 0 48 24" width="72" aria-hidden="true"><path d="M2 18 C 12 4, 22 22, 46 8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="3 4"/></svg>
+              <p>Henüz olay yok — site trafik almaya başlayınca burada akacak.</p>
+            </div>
+          <% } else { %>
+            <ul class="feed">
+              <% feed.forEach(e => { %>
+                <li class="feed-item <%= e.kind === 'conversion' ? 'feed-item--conv' : '' %>">
+                  <span class="feed-ico" aria-hidden="true">
+                    <% if (e.kind === 'conversion') { %>
+                      <svg viewBox="0 0 24 24" width="13" height="13"><path fill="currentColor" d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.01-.24c1.12.37 2.33.57 3.58.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1C10.61 21 3 13.39 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.46.57 3.58a1 1 0 0 1-.24 1.01l-2.2 2.2z"/></svg>
+                    <% } else { %>
+                      <svg viewBox="0 0 24 24" width="13" height="13"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M2 12c3-6 7-9 10-9s7 3 10 9c-3 6-7 9-10 9s-7-3-10-9z"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>
+                    <% } %>
+                  </span>
+                  <div class="feed-body">
+                    <strong>
+                      <% if (e.kind === 'conversion') { %>
+                        <%= e.type === 'whatsapp' ? 'WhatsApp tıklaması' : e.type === 'form' ? 'Form gönderimi' : 'Telefon araması' %>
+                      <% } else { %>Sayfa görüntüleme<% } %>
+                    </strong>
+                    <code><%= e.label %></code>
+                  </div>
+                  <time><%= e.when %></time>
+                </li>
+              <% }) %>
+            </ul>
+          <% } %>
+        </section>
+      </div>
+
+      <!-- Top pages + top sources -->
+      <div class="grid-2">
+        <section class="card">
+          <div class="card-head">
+            <h3>En Çok Görüntülenen Sayfalar</h3>
+            <a href="/admin/pages?range=<%= range.key %>" class="card-link">Tümü →</a>
+          </div>
+          <% if (topPages.length === 0) { %>
+            <div class="empty-state"><p>Bu aralıkta görüntüleme yok.</p></div>
+          <% } else { const maxP = topPages[0].views; %>
+            <ul class="rank-list">
+              <% topPages.forEach(p => { %>
+                <li class="rank-item">
+                  <code class="rank-label"><%= p.path %></code>
+                  <div class="rank-bar"><i style="width:<%= Math.max(4, Math.round(p.views / maxP * 100)) %>%"></i></div>
+                  <span class="rank-val"><%= p.views %></span>
+                </li>
+              <% }) %>
+            </ul>
+          <% } %>
+        </section>
+
+        <section class="card">
+          <div class="card-head">
+            <h3>Trafik Kaynakları</h3>
+            <a href="/admin/sources?range=<%= range.key %>" class="card-link">Tümü →</a>
+          </div>
+          <% if (topSources.length === 0) { %>
+            <div class="empty-state"><p>Bu aralıkta trafik yok — UTM etiketli link paylaşarak kaynakları ayrıştırabilirsin.</p></div>
+          <% } else { const maxS = topSources[0].visits; %>
+            <ul class="rank-list">
+              <% topSources.forEach(s => { %>
+                <li class="rank-item">
+                  <span class="rank-label"><span class="chip chip--<%= s.bucket %>"><%= s.source %></span></span>
+                  <div class="rank-bar"><i style="width:<%= Math.max(4, Math.round(s.visits / maxS * 100)) %>%"></i></div>
+                  <span class="rank-val"><%= s.visits %></span>
+                </li>
+              <% }) %>
+            </ul>
+          <% } %>
+        </section>
+      </div>
+
+      <script id="admin-data" type="application/json"><%- payload %></script>
+    </main>
+  </div>
+</body>
+</html>

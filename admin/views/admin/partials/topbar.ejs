@@ -1,0 +1,15 @@
+<header class="topbar">
+  <div class="topbar-titles">
+    <p class="eyebrow"><%= eyebrow %></p>
+    <h1><%= heading %></h1>
+    <% if (locals.sub) { %><p class="topbar-sub"><%= sub %></p><% } %>
+  </div>
+  <% if (locals.range) { %>
+    <nav class="range-picker" aria-label="Tarih aralığı">
+      <a href="<%= path %>?range=today" class="range-pill <%= range.key === 'today' ? 'is-active' : '' %>">Bugün</a>
+      <a href="<%= path %>?range=7d" class="range-pill <%= range.key === '7d' ? 'is-active' : '' %>">7 gün</a>
+      <a href="<%= path %>?range=30d" class="range-pill <%= range.key === '30d' ? 'is-active' : '' %>">30 gün</a>
+      <a href="<%= path %>?range=90d" class="range-pill <%= range.key === '90d' ? 'is-active' : '' %>">90 gün</a>
+    </nav>
+  <% } %>
+</header>

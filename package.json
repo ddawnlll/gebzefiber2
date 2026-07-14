@@ -1,0 +1,22 @@
+{
+  "name": "gebze-fiber-tamir",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Gebze Fiber Tamir marketing site + admin analytics panel, served statically with the admin panel and tracking API as Netlify Functions.",
+  "scripts": {
+    "admin:dev": "node --watch admin/server.js",
+    "dev": "netlify dev"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.6",
+    "ejs": "^3.1.10",
+    "express": "^4.21.0",
+    "express-rate-limit": "^7.4.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongodb": "^6.10.0",
+    "serverless-http": "^3.2.0",
+    "ua-parser-js": "^1.0.38"
+  }
+}

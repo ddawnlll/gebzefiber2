@@ -1,0 +1,65 @@
+<%- include('partials/head', { title: 'Ayarlar' }) %>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="layout">
+    <%- include('partials/sidebar', { active: 'settings' }) %>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="topbar-titles">
+          <p class="eyebrow">Yönetim</p>
+          <h1>Ayarlar</h1>
+          <p class="topbar-sub">Oturum: <strong><%= admin.username %></strong></p>
+        </div>
+      </header>
+
+      <div class="grid-2">
+        <section class="card">
+          <div class="card-head"><h3>Şifre Değiştir</h3></div>
+
+          <% if (error) { %><div class="alert alert-error" role="alert"><%= error %></div><% } %>
+          <% if (success) { %><div class="alert alert-ok" role="status"><%= success %></div><% } %>
+
+          <form method="POST" action="/admin/settings/password" class="form">
+            <label class="field">
+              <span class="field-label">Mevcut Şifre</span>
+              <input type="password" name="current" autocomplete="current-password" required>
+            </label>
+            <label class="field">
+              <span class="field-label">Yeni Şifre <small>(en az 8 karakter)</small></span>
+              <input type="password" name="next" autocomplete="new-password" minlength="8" required>
+            </label>
+            <label class="field">
+              <span class="field-label">Yeni Şifre (tekrar)</span>
+              <input type="password" name="confirm" autocomplete="new-password" minlength="8" required>
+            </label>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">Güncelle</button>
+            </div>
+          </form>
+        </section>
+
+        <section class="card">
+          <div class="card-head"><h3>Tracking Kodu</h3></div>
+          <p class="card-desc">
+            Bu iki satır sitenin <code>&lt;head&gt;</code> bölümünde olmalı.
+            Sunucuyu deploy edince <code>__ANALYTICS_API</code> adresini prod URL ile değiştir.
+          </p>
+          <div class="snippet-box">
+            <pre id="snippet"><code>&lt;script&gt;window.__ANALYTICS_API = "<%= apiBase %>";&lt;/script&gt;
+&lt;script src="/js/analytics.js" defer&gt;&lt;/script&gt;</code></pre>
+            <button type="button" class="btn btn-sm" id="copySnippet">Kopyala</button>
+          </div>
+
+          <div class="card-head" style="margin-top:1.6rem"><h3>Sistem</h3></div>
+          <ul class="meta-list">
+            <li><span>API adresi</span><code><%= apiBase %></code></li>
+            <li><span>Veritabanı</span><code>SQLite · admin/data/analytics.db</code></li>
+            <li><span>Canlı ziyaretçi ölçümü</span><code>son 5 dk heartbeat</code></li>
+          </ul>
+        </section>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<%- include('partials/head', { title: 'Ziyaretçiler' }) %>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="layout">
+    <%- include('partials/sidebar', { active: 'visitors' }) %>
+
+    <main class="main">
+      <%- include('partials/topbar', {
+        eyebrow: 'Analitik',
+        heading: 'Ziyaretçiler',
+        sub: 'Kim, hangi cihazla, kaçıncı kez geliyor',
+        range, path: '/admin/visitors'
+      }) %>
+
+      <div class="kpi-grid kpi-grid--3">
+        <article class="kpi kpi--mint">
+          <div class="kpi-top"><span class="kpi-label">Toplam Ziyaretçi</span></div>
+          <span class="kpi-num" data-count="<%= totals.total || 0 %>"><%= totals.total || 0 %></span>
+          <span class="kpi-foot"><%= range.label %></span>
+        </article>
+        <article class="kpi kpi--violet">
+          <div class="kpi-top"><span class="kpi-label">Yeni Ziyaretçi</span></div>
+          <span class="kpi-num" data-count="<%= totals.fresh || 0 %>"><%= totals.fresh || 0 %></span>
+          <span class="kpi-foot">ilk kez geliyor</span>
+        </article>
+        <article class="kpi kpi--amber">
+          <div class="kpi-top"><span class="kpi-label">Dönen Ziyaretçi</span></div>
+          <span class="kpi-num" data-count="<%= totals.returning_count || 0 %>"><%= totals.returning_count || 0 %></span>
+          <span class="kpi-foot">tekrar ziyaret</span>
+        </article>
+      </div>
+
+      <div class="grid-3">
+        <section class="card">
+          <div class="card-head"><h3>Cihaz</h3></div>
+          <% if (devices.length === 0) { %>
+            <div class="empty-state"><p>Veri yok.</p></div>
+          <% } else { const maxD = devices[0].v; %>
+            <ul class="rank-list">
+              <% devices.forEach(d => { %>
+                <li class="rank-item">
+                  <span class="rank-label"><%= d.k === 'mobile' ? 'Telefon' : d.k === 'tablet' ? 'Tablet' : d.k === 'desktop' ? 'Bilgisayar' : d.k %></span>
+                  <div class="rank-bar rank-bar--mint"><i style="width:<%= Math.max(4, Math.round(d.v / maxD * 100)) %>%"></i></div>
+                  <span class="rank-val"><%= d.v %></span>
+                </li>
+              <% }) %>
+            </ul>
+          <% } %>
+        </section>
+
+        <section class="card">
+          <div class="card-head"><h3>Tarayıcı</h3></div>
+          <% if (browsers.length === 0) { %>
+            <div class="empty-state"><p>Veri yok.</p></div>
+          <% } else { const maxB = browsers[0].v; %>
+            <ul class="rank-list">
+              <% browsers.forEach(b => { %>
+                <li class="rank-item">
+                  <span class="rank-label"><%= b.k %></span>
+                  <div class="rank-bar rank-bar--violet"><i style="width:<%= Math.max(4, Math.round(b.v / maxB * 100)) %>%"></i></div>
+                  <span class="rank-val"><%= b.v %></span>
+                </li>
+              <% }) %>
+            </ul>
+          <% } %>
+        </section>
+
+        <section class="card">
+          <div class="card-head"><h3>İşletim Sistemi</h3></div>
+          <% if (systems.length === 0) { %>
+            <div class="empty-state"><p>Veri yok.</p></div>
+          <% } else { const maxO = systems[0].v; %>
+            <ul class="rank-list">
+              <% systems.forEach(o => { %>
+                <li class="rank-item">
+                  <span class="rank-label"><%= o.k %></span>
+                  <div class="rank-bar rank-bar--amber"><i style="width:<%= Math.max(4, Math.round(o.v / maxO * 100)) %>%"></i></div>
+                  <span class="rank-val"><%= o.v %></span>
+                </li>
+              <% }) %>
+            </ul>
+          <% } %>
+        </section>
+      </div>
+
+      <section class="card">
+        <div class="card-head">
+          <h3>Son Oturumlar</h3>
+          <span class="card-note">en yeni 25</span>
+        </div>
+        <% if (sessions.length === 0) { %>
+          <div class="empty-state">
+            <svg viewBox="0 0 48 24" width="72" aria-hidden="true"><path d="M2 18 C 12 4, 22 22, 46 8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="3 4"/></svg>
+            <p>Bu aralıkta oturum yok.</p>
+          </div>
+        <% } else { %>
+          <div class="table-wrap">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Giriş Sayfası</th>
+                  <th>Kaynak</th>
+                  <th>Cihaz</th>
+                  <th>Görüntüleme</th>
+                  <th>Süre</th>
+                  <th>Ziyaret</th>
+                  <th>Dönüşüm</th>
+                  <th>Zaman</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% sessions.forEach(s => { %>
+                  <tr>
+                    <td><code class="td-path"><%= s.entry || '-' %></code></td>
+                    <td><span class="chip chip--<%= s.bucket %>"><%= s.source || 'direct' %></span></td>
+                    <td class="td-muted"><%= s.device === 'mobile' ? 'Telefon' : s.device === 'tablet' ? 'Tablet' : 'Bilgisayar' %> · <%= (s.browser || '?').split(' ')[0] %></td>
+                    <td><%= s.views %></td>
+                    <td><%= s.total_time %>s</td>
+                    <td><%= s.visit_count > 1 ? s.visit_count + '. kez' : 'yeni' %></td>
+                    <td><% if (s.conversions > 0) { %><span class="chip chip--conv">✓ <%= s.conversions %></span><% } else { %><span class="td-muted">—</span><% } %></td>
+                    <td class="td-muted"><%= s.when %></td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+        <% } %>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<%- include('partials/head', { title: 'Blog' }) %>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="layout">
+    <%- include('partials/sidebar', { active: 'blog' }) %>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="topbar-titles">
+          <p class="eyebrow">İçerik</p>
+          <h1>Blog</h1>
+          <p class="topbar-sub"><%= posts.length %> yazı · <%= posts.filter(p => p.published).length %> yayında</p>
+        </div>
+        <a href="/admin/blog/new" class="btn btn-primary">
+          <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" d="M12 5v14M5 12h14"/></svg>
+          Yeni Yazı
+        </a>
+      </header>
+
+      <% if (posts.length === 0) { %>
+        <section class="card">
+          <div class="empty-state empty-state--big">
+            <svg viewBox="0 0 48 24" width="90" aria-hidden="true"><path d="M2 18 C 12 4, 22 22, 46 8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="3 4"/></svg>
+            <p><strong>Henüz yazı yok.</strong><br>Fiber arızaları hakkında rehber içerikler Google'dan trafik çekmenin en iyi yolu. İlk yazını ekle.</p>
+            <a href="/admin/blog/new" class="btn btn-primary">İlk Yazıyı Ekle</a>
+          </div>
+        </section>
+      <% } else { %>
+        <div class="post-grid">
+          <% posts.forEach(p => { %>
+            <article class="post-card <%= p.published ? '' : 'post-card--draft' %>">
+              <div class="post-top">
+                <span class="chip <%= p.published ? 'chip--conv' : 'chip--draft' %>"><%= p.published ? 'Yayında' : 'Taslak' %></span>
+                <time class="td-muted"><%= p.created_day %></time>
+              </div>
+              <h3 class="post-title"><%= p.title %></h3>
+              <code class="post-slug">/blog/<%= p.slug %></code>
+              <% if (p.excerpt) { %><p class="post-excerpt"><%= p.excerpt %></p><% } %>
+              <div class="post-foot">
+                <span class="td-muted"><%= Math.max(1, Math.round(p.content_len / 1200)) %> dk okuma</span>
+                <div class="post-actions">
+                  <a href="/admin/blog/<%= p.id %>/edit" class="btn btn-sm">Düzenle</a>
+                  <form method="POST" action="/admin/blog/<%= p.id %>/delete" onsubmit="return confirm('«<%= p.title %>» silinsin mi? Bu işlem geri alınamaz.')">
+                    <button type="submit" class="btn btn-sm btn-danger">Sil</button>
+                  </form>
+                </div>
+              </div>
+            </article>
+          <% }) %>
+        </div>
+      <% } %>
+    </main>
+  </div>
+</body>
+</html>

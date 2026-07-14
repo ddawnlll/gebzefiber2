@@ -1,0 +1,84 @@
+<%- include('partials/head', { title: 'Dönüşümler' }) %>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="layout">
+    <%- include('partials/sidebar', { active: 'conversions' }) %>
+
+    <main class="main">
+      <%- include('partials/topbar', {
+        eyebrow: 'Analitik',
+        heading: 'Dönüşümler',
+        sub: 'Telefon ve WhatsApp tıklamaları — işin asıl karşılığı',
+        range, path: '/admin/conversions'
+      }) %>
+
+      <div class="grid-main">
+        <section class="card card--span2">
+          <div class="card-head">
+            <h3>Dönüşüm Hunisi</h3>
+            <span class="card-note"><%= range.label %> · toplam <strong class="t-amber"><%= total %></strong> dönüşüm, oran %<%= rate %></span>
+          </div>
+          <div class="funnel">
+            <% funnel.forEach((f, i) => { %>
+              <div class="funnel-row">
+                <span class="funnel-label"><%= f.label %></span>
+                <div class="funnel-bar funnel-bar--<%= i %>">
+                  <i style="width:<%= Math.max(2, f.pct) %>%"></i>
+                </div>
+                <span class="funnel-val"><strong><%= f.value %></strong> <small>%<%= f.pct %></small></span>
+              </div>
+            <% }) %>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-head"><h3>Türe Göre</h3></div>
+          <div id="convRing" class="ring-host"></div>
+        </section>
+      </div>
+
+      <section class="card">
+        <div class="card-head">
+          <h3>Saate Göre Dönüşüm</h3>
+          <span class="card-note">hangi saatte aranıyorsun</span>
+        </div>
+        <div id="hourBars" class="chart-host chart-host--bars" role="img" aria-label="Saatlik dönüşüm dağılımı"></div>
+      </section>
+
+      <section class="card">
+        <div class="card-head">
+          <h3>Son Dönüşümler</h3>
+          <span class="card-note">en yeni 100</span>
+        </div>
+        <% if (recent.length === 0) { %>
+          <div class="empty-state">
+            <svg viewBox="0 0 48 24" width="72" aria-hidden="true"><path d="M2 18 C 12 4, 22 22, 46 8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="3 4"/></svg>
+            <p>Bu aralıkta dönüşüm yok. Telefon veya WhatsApp butonuna tıklanınca burada görünür.</p>
+          </div>
+        <% } else { %>
+          <div class="table-wrap">
+            <table class="table">
+              <thead>
+                <tr><th>Tür</th><th>Sayfa</th><th>Kaynak</th><th>Kampanya</th><th>Zaman</th></tr>
+              </thead>
+              <tbody>
+                <% recent.forEach(c => { %>
+                  <tr>
+                    <td><span class="chip chip--type-<%= c.type %>"><%= c.type === 'whatsapp' ? 'WhatsApp' : c.type === 'form' ? 'Form' : 'Telefon' %></span></td>
+                    <td><code class="td-path"><%= c.page || '-' %></code></td>
+                    <td><%= c.source %></td>
+                    <td class="td-muted"><%= c.utm_campaign || '—' %></td>
+                    <td class="td-muted" title="<%= c.local_time %>"><%= c.when %></td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+        <% } %>
+      </section>
+
+      <script id="admin-data" type="application/json"><%- payload %></script>
+    </main>
+  </div>
+</body>
+</html>

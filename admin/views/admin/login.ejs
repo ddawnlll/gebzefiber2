@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Giriş — Gebze Fiber Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/admin/assets/style.css">
+</head>
+<body class="login-body">
+  <div class="grain" aria-hidden="true"></div>
+  <div class="login-glow" aria-hidden="true"></div>
+
+  <svg class="login-wave" viewBox="0 0 1440 400" preserveAspectRatio="none" aria-hidden="true">
+    <defs>
+      <linearGradient id="waveGrad" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="#6bf0c2"/>
+        <stop offset="0.55" stop-color="#9d8cff"/>
+        <stop offset="1" stop-color="#ffb25e"/>
+      </linearGradient>
+    </defs>
+    <path class="login-wave-path" d="M-20 260 C 180 80, 340 340, 560 200 S 940 60, 1160 220 S 1380 340, 1480 160"
+          fill="none" stroke="url(#waveGrad)" stroke-width="2" stroke-linecap="round"/>
+    <path class="login-wave-path login-wave-path--dim" d="M-20 300 C 200 140, 380 380, 620 250 S 980 120, 1200 270 S 1400 360, 1480 220"
+          fill="none" stroke="url(#waveGrad)" stroke-width="1.2" stroke-linecap="round"/>
+  </svg>
+
+  <main class="login-box">
+    <svg class="login-logo" viewBox="0 0 32 32" width="44" height="44" aria-hidden="true">
+      <path d="M2 22 C 10 6, 18 28, 30 10" fill="none" stroke="url(#loginMark)" stroke-width="2.4" stroke-linecap="round"/>
+      <circle class="brand-pulse" cx="21" cy="21.4" r="3" fill="#ffb25e"/>
+      <defs>
+        <linearGradient id="loginMark" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stop-color="#6bf0c2"/>
+          <stop offset="1" stop-color="#9d8cff"/>
+        </linearGradient>
+      </defs>
+    </svg>
+    <p class="eyebrow">Gebze Fiber Tamir</p>
+    <h1>Yönetim Paneli</h1>
+    <p class="login-sub">Işığın gittiği yeri buradan izle.</p>
+
+    <% if (error) { %>
+      <div class="alert alert-error" role="alert"><%= error %></div>
+    <% } %>
+
+    <form method="POST" action="/admin/login">
+      <label>
+        Kullanıcı Adı
+        <input type="text" name="username" autocomplete="username" required autofocus>
+      </label>
+      <label>
+        Şifre
+        <input type="password" name="password" autocomplete="current-password" required>
+      </label>
+      <button type="submit" class="btn btn-primary">Giriş Yap</button>
+    </form>
+  </main>
+</body>
+</html>

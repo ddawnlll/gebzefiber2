@@ -1,0 +1,126 @@
+<%- include('partials/head', { title: 'Trafik Kaynakları' }) %>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="layout">
+    <%- include('partials/sidebar', { active: 'sources' }) %>
+
+    <main class="main">
+      <%- include('partials/topbar', {
+        eyebrow: 'Analitik',
+        heading: 'Trafik Kaynakları',
+        sub: 'Ziyaretçiler nereden geliyor, hangisi aramaya dönüyor',
+        range, path: '/admin/sources'
+      }) %>
+
+      <!-- Channel buckets -->
+      <div class="kpi-grid">
+        <article class="kpi kpi--mint">
+          <div class="kpi-top"><span class="kpi-label">Arama Motoru</span></div>
+          <span class="kpi-num"><%= buckets.search.visits %></span>
+          <span class="kpi-foot"><%= buckets.search.conversions %> dönüşüm</span>
+        </article>
+        <article class="kpi kpi--violet">
+          <div class="kpi-top"><span class="kpi-label">Sosyal Medya</span></div>
+          <span class="kpi-num"><%= buckets.social.visits %></span>
+          <span class="kpi-foot"><%= buckets.social.conversions %> dönüşüm</span>
+        </article>
+        <article class="kpi kpi--amber">
+          <div class="kpi-top"><span class="kpi-label">Yönlendirme</span></div>
+          <span class="kpi-num"><%= buckets.referral.visits %></span>
+          <span class="kpi-foot"><%= buckets.referral.conversions %> dönüşüm</span>
+        </article>
+        <article class="kpi">
+          <div class="kpi-top"><span class="kpi-label">Doğrudan</span></div>
+          <span class="kpi-num"><%= buckets.direct.visits %></span>
+          <span class="kpi-foot"><%= buckets.direct.conversions %> dönüşüm</span>
+        </article>
+      </div>
+
+      <div class="grid-main">
+        <section class="card card--span2">
+          <div class="card-head">
+            <h3>Kaynak Detayı</h3>
+            <span class="card-note"><%= range.label %></span>
+          </div>
+          <% if (sources.length === 0) { %>
+            <div class="empty-state">
+              <svg viewBox="0 0 48 24" width="72" aria-hidden="true"><path d="M2 18 C 12 4, 22 22, 46 8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="3 4"/></svg>
+              <p>Bu aralıkta trafik yok. Google Business, sosyal medya veya ilan linklerine <code>?utm_source=...</code> ekleyerek kaynakları burada ayrıştırabilirsin.</p>
+            </div>
+          <% } else { %>
+            <div class="table-wrap">
+              <table class="table" data-sortable>
+                <thead>
+                  <tr>
+                    <th>Kaynak</th>
+                    <th data-sort="num" class="is-sorted">Ziyaret <span class="sort-ico"></span></th>
+                    <th data-sort="num">Tekil <span class="sort-ico"></span></th>
+                    <th data-sort="num">Etkileşim <span class="sort-ico"></span></th>
+                    <th data-sort="num">Ort. Süre <span class="sort-ico"></span></th>
+                    <th data-sort="num">Dönüşüm <span class="sort-ico"></span></th>
+                    <th data-sort="num">Oran <span class="sort-ico"></span></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% sources.forEach(s => { %>
+                    <tr>
+                      <td>
+                        <span class="chip chip--<%= s.bucket %>"><%= s.source %></span>
+                        <div class="cell-bar"><i style="width:<%= Math.max(3, s.share) %>%"></i></div>
+                      </td>
+                      <td data-v="<%= s.visits %>"><%= s.visits %></td>
+                      <td data-v="<%= s.uniques %>"><%= s.uniques %></td>
+                      <td data-v="<%= s.engaged %>"><%= s.engaged %></td>
+                      <td data-v="<%= Math.round(s.avg_time || 0) %>"><%= Math.round(s.avg_time || 0) %>s</td>
+                      <td data-v="<%= s.conversions %>"><strong class="t-amber"><%= s.conversions %></strong></td>
+                      <td data-v="<%= s.rate %>">%<%= s.rate %></td>
+                    </tr>
+                  <% }) %>
+                </tbody>
+              </table>
+            </div>
+          <% } %>
+        </section>
+
+        <div class="stack">
+          <section class="card">
+            <div class="card-head"><h3>Yönlendiren Siteler</h3></div>
+            <% if (referrers.length === 0) { %>
+              <div class="empty-state"><p>Henüz başka bir siteden gelen ziyaretçi yok.</p></div>
+            <% } else { const maxR = referrers[0].visits; %>
+              <ul class="rank-list">
+                <% referrers.forEach(rf => { %>
+                  <li class="rank-item">
+                    <span class="rank-label"><%= rf.domain %></span>
+                    <div class="rank-bar"><i style="width:<%= Math.max(4, Math.round(rf.visits / maxR * 100)) %>%"></i></div>
+                    <span class="rank-val"><%= rf.visits %></span>
+                  </li>
+                <% }) %>
+              </ul>
+            <% } %>
+          </section>
+
+          <section class="card">
+            <div class="card-head"><h3>Kampanyalar</h3></div>
+            <% if (campaigns.length === 0) { %>
+              <div class="empty-state"><p>UTM kampanyası yok. Link paylaşırken <code>?utm_campaign=ad</code> ekle, burada takip et.</p></div>
+            <% } else { %>
+              <ul class="camp-list">
+                <% campaigns.forEach(c => { %>
+                  <li class="camp-item">
+                    <div class="camp-name"><strong><%= c.campaign %></strong><span><%= c.source %> / <%= c.medium %></span></div>
+                    <div class="camp-stats">
+                      <span><%= c.visits %> ziyaret</span>
+                      <span class="t-amber"><%= c.conversions %> dönüşüm</span>
+                    </div>
+                  </li>
+                <% }) %>
+              </ul>
+            <% } %>
+          </section>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

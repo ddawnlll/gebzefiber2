@@ -1,0 +1,67 @@
+<%- include('partials/head', { title: post ? 'Düzenle: ' + post.title : 'Yeni Yazı' }) %>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="layout">
+    <%- include('partials/sidebar', { active: 'blog' }) %>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="topbar-titles">
+          <p class="eyebrow">İçerik</p>
+          <h1><%= post ? 'Yazıyı Düzenle' : 'Yeni Blog Yazısı' %></h1>
+        </div>
+        <a href="/admin/blog" class="btn">← Geri</a>
+      </header>
+
+      <section class="card">
+        <% if (error) { %>
+          <div class="alert alert-error" role="alert"><%= error %></div>
+        <% } %>
+
+        <form method="POST" action="/admin/blog<%= post && post.id ? '/' + post.id : '' %>" class="form" id="postForm">
+          <div class="form-row">
+            <label class="field">
+              <span class="field-label">Başlık</span>
+              <input type="text" name="title" id="fTitle" value="<%= post ? post.title : '' %>" required maxlength="140">
+            </label>
+            <label class="field">
+              <span class="field-label">Slug <small>(URL adı — başlıktan otomatik dolar)</small></span>
+              <input type="text" name="slug" id="fSlug" value="<%= post ? post.slug : '' %>" placeholder="ornek-yazi" pattern="[a-z0-9-]+" required>
+            </label>
+          </div>
+
+          <label class="field">
+            <span class="field-label">Özet <small>(isteğe bağlı · <span id="excerptCount">0</span>/200)</small></span>
+            <textarea name="excerpt" id="fExcerpt" rows="2" maxlength="200"><%= post && post.excerpt ? post.excerpt : '' %></textarea>
+          </label>
+
+          <label class="field">
+            <span class="field-label">Kapak Görseli URL <small>(isteğe bağlı)</small></span>
+            <input type="url" name="cover_url" value="<%= post && post.cover_url ? post.cover_url : '' %>" placeholder="https://...">
+          </label>
+
+          <div class="field">
+            <div class="field-head">
+              <span class="field-label">İçerik <small>(HTML · <span id="contentCount">0</span> karakter)</small></span>
+              <button type="button" class="btn btn-sm" id="previewToggle">Önizleme</button>
+            </div>
+            <textarea name="content" id="fContent" rows="18" required class="mono"><%= post ? post.content : '' %></textarea>
+            <div id="previewPane" class="preview-pane" hidden></div>
+          </div>
+
+          <div class="form-foot">
+            <label class="label-check">
+              <input type="checkbox" name="published" value="1" <%= post && post.published ? 'checked' : '' %>>
+              <span>Yayınla</span>
+            </label>
+            <div class="form-actions">
+              <a href="/admin/blog" class="btn">İptal</a>
+              <button type="submit" class="btn btn-primary">Kaydet</button>
+            </div>
+          </div>
+        </form>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
